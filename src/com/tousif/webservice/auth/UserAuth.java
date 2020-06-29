@@ -23,22 +23,22 @@ import com.tousif.webservice.util.CreateDBConnection;
 import com.tousif.webservice.util.DBConnectionUtill;
 import com.tousif.webservice.util.LogClass;
 
-@Path("/userauth")
+@Path("/users")
 public class UserAuth {
 	
 	private StringBuilder sb;
-
+	
 	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response userDetailsNotEntered() {
-		LogClass.log.info("Username-Password Not Provided");
-		return Response.status(200).entity("userDetailsNotEntered").build();
+	@Path("/ping")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String ping() {
+		return "Webservice is Online";
 	}
 	
 	@GET
 	@Path("/user")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getUseResponser(@HeaderParam("authorization") String authString) {
+	public Response getUser(@HeaderParam("authorization") String authString) {
 		JSONObject json =new JSONObject();
 		if(!isValid(authString)) {
 			json.put("error", "User Not Authenticated");
@@ -48,6 +48,7 @@ public class UserAuth {
 		return Response.status(200).entity(json.toString()).build();
 		
 	}
+	
 	@SuppressWarnings("static-access")
 	private boolean isValid(String authString) {
 		
