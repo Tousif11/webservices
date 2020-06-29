@@ -3,6 +3,7 @@ package com.tousif.webservice.util;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -18,9 +19,13 @@ public class LogClass {
 	
 	static {
 		if(!LogClass.loaded) {
+			System.out.println("Opening log file");
 			Properties logProperties = new Properties();
+			InputStream input = null;
 			try {
-				logProperties.load(new FileInputStream(LOG_PROPERTIES_FILE));
+				input = new FileInputStream(LOG_PROPERTIES_FILE);
+				logProperties.load(input);
+				System.out.println(logProperties.getProperty("tousif.test"));
 				PropertyConfigurator.configure(logProperties);
 				log.info("***********Logging Initialized**********");
 			} catch(FileNotFoundException fe){
@@ -30,6 +35,16 @@ public class LogClass {
 				throw new RuntimeException("Unable to load Logging property "+LOG_PROPERTIES_FILE);
 			} catch(Exception e1) {
 				e1.printStackTrace();
+			}
+			finally {
+				if(input != null) {
+					try {
+						System.out.println("Closing log file");
+						input.close();
+					}catch (IOException e) {
+						throw new RuntimeException("Unable to Close Logging property "+LOG_PROPERTIES_FILE);
+				}
+			}
 			}
 			LogClass.loaded=true;
 		}
